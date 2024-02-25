@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AppLoading} from 'expo';
+import * as Font from 'expo-font';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+// Importa tus pantallas
+import HomeScreen from './screens/HomeScreen';
+import MapScreen from "./screens/MapScreen";
+import ScoreScreen from "./screens/ScoreScreen";
+
+const Stack = createNativeStackNavigator();
+
+function App() {
+    const [fontsLoaded, setFontsLoaded] = React.useState(false);
+    const loadFonts = async () => {
+        await Font.loadAsync({
+            'open-sans-regular': require('./assets/fonts/open-sans-regular.ttf'),
+            'open-sans-700': require('./assets/fonts/open-sans-700.ttf'),
+        });
+        setFontsLoaded(true);
+    };
+
+    React.useEffect(() => {
+        loadFonts();
+    }, []);
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home"
+                             screenOptions={{
+                                 headerShown: false
+                             }}>
+                <Stack.Screen name="Home" component={HomeScreen}/>
+                <Stack.Screen name="MapScreen" component={MapScreen}/>
+                <Stack.Screen name="ScoreScreen" component={ScoreScreen}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
